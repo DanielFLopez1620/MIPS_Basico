@@ -6,7 +6,7 @@
     letrero3: .asciiz "Multiplicacion: "
     letrero4: .asciiz "Division entera: "
 	saltoLinea: .asciiz "\n" # \n representa un enter o salto de línea
-.text
+.text 
     main: # Etiqueta de función base o principal
         # --Cargar numeros----------------------------------------------------
         lw $t0,num1 #load .word num1 a temporal 0
