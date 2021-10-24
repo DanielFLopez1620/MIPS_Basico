@@ -1,6 +1,7 @@
 .data   #Apartado de declaración de datos
     num1: .word 15  #.word para representar datos enteros
-	num2: .word 10  
+	num2: .word 10
+    pedir: .asciiz "Digite un numero:"  
 	letrero1: .asciiz "Suma: "  #.ascciz para representar cadenas o string
 	letrero2: .asciiz "Resta: "
     letrero3: .asciiz "Multiplicacion: "
@@ -11,6 +12,19 @@
         # --Cargar numeros----------------------------------------------------
         lw $t0,num1 #load .word num1 a temporal 0
         lw $t1,num2 
+        #--Incluir lectura por parte del usuario------------------------------
+        li $v0, 4
+        la $a0, pedir
+        syscall
+        li $v0, 5 #li con parametro cinco permite la lectura de un entero por teclado
+        syscall
+        add $t0, $zero, $v0 #Guardado del valor leido al temporal
+        li $v0, 4
+        la $a0, pedir
+        syscall
+        li $v0, 5
+        syscall
+        add $t1, $zero, $v0
         # --Calcular operaciones----------------------------------------------
         add $t2,$t0,$t1  #Cargar el resultado de $t0 y $t1 al primer parametro
         sub $t3,$t0,$t1
