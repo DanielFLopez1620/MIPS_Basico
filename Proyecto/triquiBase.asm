@@ -1,4 +1,4 @@
-//--------- DATOS Y VARIABLES DE COMPUTADORA ----------------------------------
+#--------- DATOS Y VARIABLES DE COMPUTADORA ----------------------------------
 .data
     tablero: .space 36
     tabla_numeros:   .byte   '1', '2', '3', '4', '5', '6', '7', '8', '9'
@@ -10,13 +10,13 @@
     parte4:       .asciiz   "_____|_____|_____\n"
     parte5:       .asciiz   "  \n"
     MensajeJuga:   .asciiz   "Ingrese su movimiento (1-9) : "
-//---------- DESARROLLO DE FUNCIONES Y MAIN ------------------------------------
+#---------- DESARROLLO DE FUNCIONES Y MAIN -------------------------------------
 .text
-    //----------------------- DESARROLLO DEL MAIN ------------------------------
+    //----------------------- DESARROLLO DEL MAIN -------------------------------
     .globl main
     main:
         la $k0, tabla_numeros
-
+    #----------------------- DEFINICION DE FUNCIONES ---------------------------
     Tabla:
         lb $t0, 0($k0)
         lb $t1, 1($k0)
