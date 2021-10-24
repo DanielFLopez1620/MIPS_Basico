@@ -129,8 +129,8 @@
         lb $t8, 8($k0)
         #beq $s0, 2, Maquina
         jr $ra
-Jugada:
-   	la $a0,MensajeJuga
+    Jugada:
+   	    la $a0, MensajeJuga
     	li $v0,4
     	syscall
     	li $v0,5
@@ -152,6 +152,7 @@ Jugada:
     	mfhi $s6
     	add $s5,$s5,$s2
     	add $s6,$s6,$s2
+        
     	beq tabla_numeros($t9),tabla_numeros($s5),primeroHBien
     	jr $ra
     	primeroHBien:
@@ -171,6 +172,7 @@ Jugada:
     	add $s6, $s6, $s4
     	beq tabla_numeros($t9),tabla_numeros($s5),primeroVBien
     	jr $ra
+
     	primeroVBien:
     		beq  tabla_numeros($t9),tabla_numeros($s6),ganador
     		jr $ra
@@ -235,5 +237,3 @@ Jugada:
     			subi $s3, $s3, 2
     			beq tabla_numeros($s3), tabla_numeros($s2),ganador
     			jr $ra
-    	
-        
