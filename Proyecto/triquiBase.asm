@@ -12,7 +12,7 @@
     MensajeJuga:   .asciiz   "Ingrese su movimiento (1-9) : "
 #---------- DESARROLLO DE FUNCIONES Y MAIN -------------------------------------
 .text
-    //----------------------- DESARROLLO DEL MAIN -------------------------------
+    #----------------------- DESARROLLO DEL MAIN -------------------------------
     .globl main
     main:
         la $k0, tabla_numeros
@@ -120,7 +120,7 @@
         lb $t6, 6($k0)
         lb $t7, 7($k0)
         lb $t8, 8($k0)
-        beq $s0, 2, Maquina
+        #beq $s0, 2, Maquina
 
     Jugador1:
         addi $s0, $zero, 2
@@ -132,26 +132,27 @@
         j Verificarprimero
 
 Verificarprimero:
-        addi $v0, $zero, 12
-        syscall
-        addi $a3, $v0, 0
-        whilePrimero:
-            bne $t9, 9, exitprimero
-            whileAnidado1:
-
-                addi $a3, $a3, 1
-                j whileAnidado1
-            exitAnidado2:
-            j whilePrimero
-        exitprimero:
-        //----------
-        while3:
-            bne $a3, $t0, siguiente 
-            b while3
-            siguiente:  addi $t0, $t0, 1
-                beq $a3, $s3, Verificarmovimiento
-                beq $a3, $s4, Verificarmovimiento
-                sb  $s6, 0($k0)
-                j Verificadorfinal
-            b while3
-        exit3:
+#        addi $v0, $zero, 12
+#        syscall
+#        addi $a3, $v0, 0
+#        whilePrimero:
+#            bne $t9, 9, exitprimero
+#            whileAnidado1:
+#
+#                addi $a3, $a3, 1
+#                j whileAnidado1
+#            exitAnidado2:
+#            j whilePrimero
+#        exitprimero:
+#        #----------
+#        while3:
+#            bne $a3, $t0, siguiente 
+#            b while3
+#            siguiente:  addi $t0, $t0, 1
+#                beq $a3, $s3, Verificarmovimiento
+#                beq $a3, $s4, Verificarmovimiento
+#                sb  $s6, 0($k0)
+#                j Verificadorfinal
+#            b while3
+#        exit3:
+#
