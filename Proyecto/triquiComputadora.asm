@@ -6,8 +6,8 @@
 	tabla_aux:   .byte   '1', '2', '3', '4', '5', '6', '7', '8', '9'
     #---------------------Movimientos y aspectos de juego----------------------------
 	nume_joc:      .asciiz   " \n\n Las señales seran X y O \n"
-    descripcion:     .asciiz   " P 1 (X)  -  Maquina (O) \n\n"
-    j1: .byte 'x'
+    descripcion:     .asciiz   " Juador (X)  -  Maquina (O) \n\n"
+    j1: .byte 'X'
     j2: .byte 'O'
     #----------------------Partes de impresión del tablero de juego--------------------
 	parte1:       .asciiz   "     |     |     \n"
@@ -21,12 +21,16 @@
 	gana1: .asciiz "Gana el jugador 1"
 	gana2: .asciiz "Gana el jugador 2"
 	maquina: .asciiz "\nJuega la maquina...\n"
+	titulo: .asciiz "Bienvenidos al triqui máquina vs jugador: "
 #_________________________ DESARROLLO DEL PROGRAMA _____________________________________
 .text
     #_______________________________DESARROLLO DEL MAIN_________________________________
     .globl main
     main:
-        la $k0, tabla_numeros
+        li $v0, 4
+		la $a0, titulo
+		syscall
+		la $k0, tabla_numeros
         jal MostrarTablero
         whileprincipal:
             lb $s1, j1
@@ -371,6 +375,7 @@
 			jr $ra
 	#----Función que manda al mensaje correspondiente de ganador----
 	ganador:
+		jal MostrarTablero
 		lb $t9, j1
 		beq $s1, $t9, Gana1
 		lb $t9, j2

@@ -6,8 +6,8 @@
 	tabla_aux:   .byte   '1', '2', '3', '4', '5', '6', '7', '8', '9'
 	#---------------------Movimientos y aspectos de juego-----------------------------
     nume_joc:      .asciiz   " \n\n Las señales seran X y O \n"
-    descripcion:     .asciiz   " Jugaodr 1 (X)  -  Jugador 2 (O) \n\n"
-    j1: .byte 'x'
+    descripcion:     .asciiz   " Jugador 1 (X)  -  Jugador 2 (O) \n\n"
+    j1: .byte 'X'
     j2: .byte 'O'
 	#----------------------Partes de impresión del tablero de juego--------------------
     parte1:       .asciiz   "     |     |     \n"
@@ -20,12 +20,16 @@
 	empa: .asciiz "Los jugadores empataron el juego"
 	gana1: .asciiz "Gana el jugador 1"
 	gana2: .asciiz "Gana el jugador 2"
+	titulo: .asciiz "Bienvenidos al triqui de 2 jugadores: "
 #_________________________ DESARROLLO DEL PROGRAMA _____________________________________
 .text
     #_______________________________DESARROLLO DEL MAIN_________________________________
     .globl main  #Llamado a l main
     main:
-        la $k0, tabla_numeros # Cargar arreglo
+        li $v0, 4
+		la $a0, titulo
+		syscall
+		la $k0, tabla_numeros # Cargar arreglo
         jal MostrarTablero
         whileprincipal: # Ciclo de jugabilidad base
             lb $s1, j1
@@ -77,6 +81,7 @@
     	jr $ra
 	#----Función que manda al mensaje correspondiente de ganador----
 	ganador:
+		jal MostrarTablero
 		lb $t9, j1 # Lectura de byte
 		beq $s1, $t9, Gana1 # Si es igual al simbolo j1, gana jugador 1
 		lb $t9, j2
