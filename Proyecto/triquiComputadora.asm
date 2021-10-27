@@ -16,6 +16,7 @@
 	empa: .asciiz "Los jugadores empataron el juego"
 	gana1: .asciiz "Gana el jugador 1"
 	gana2: .asciiz "Gana el jugador 2"
+	maquina: .asciiz "\nJuega la maquina...\n"
 #--------- DESARROLLO DEL PROGRAMA -----------------------------------
 .text
     #-----------------DESARROLLO DEL MAIN-----------------------------
@@ -30,6 +31,7 @@
 			 jal linea
              lb $s1, j2
              jal JugadaMaquina
+			 jal Comprobacion
              jal MostrarTablero
 			 jal linea
 			 jal EmpateySeguirjuego
@@ -73,176 +75,29 @@
     	lw $ra, 0($sp)
     	jr $ra
 
-    Comprobacion:
-    	addi $s3, $zero, 3
-    	div $t9, $s3
-    	mflo $s2
-    	mul $s2, $s2, $s3
-    	sub $s4, $t9, $s2
-    	addi $s5,$s4,1
-    	addi $s6,$s4,2
-    	div $s5, $s3
-    	mfhi $s5
-    	div $s6, $s3
-    	mfhi $s6
-    	add $s5,$s5,$s2
-    	add $s6,$s6,$s2
-    	lb $t7, tabla_numeros($t9)
-    	lb $t8, tabla_numeros($s5)
-    	sw $ra, 4($sp)
-    	beq $t7,$t8,primeroHBien
-    	jal vertical
-    	primeroHBien:
-	    	lb $t8, tabla_numeros($s6)
-	    	sw $ra, 8($sp)
-    		beq  $t8,$t7,ganador
-    		lw $ra, 8($sp)
-    		jr $ra
-		vertical:
-    	div $t9, $s3
-    	mflo $s2
-    	addi $s5, $s2,1
-    	addi $s6, $s2, 2
-    	div $s5, $s3
-    	mfhi $s5
-    	div $s6, $s3
-    	mfhi $s6
-    	mul $s5, $s5, $s3
-    	mul $s6, $s6, $s3
-    	add $s5, $s5, $s4
-    	add $s6, $s6, $s4
-    	lb $t8, tabla_numeros($s5)
-    	beq $t7,$t8,primeroVBien
-    	jal diago
-    	primeroVBien:
-    		lb $t8, tabla_numeros($s6)
-    		sw $ra, 8($sp)
-    		beq  $t7,$t8,ganador
-    		lw $ra, 8($sp)
-    		jr $ra
-		diago: 
-    	
-    	beq $t9, 0, dD1
-    	
-    	addi $s2, $zero, 4
-    	
-    	beq $t9, $s2, diagoD2
-    	
-    	addi $s2, $zero, 8
-    	
-    	beq $t9, $s2, diagoD3
-    	
-    	addi $s2, $zero, 2
-    
-    	beq $t9, $s2, diagoI1
-    
-    	addi $s2, $zero, 4
-   
-    	beq $t9, $s2, diagoI2
-  
-    	addi $s2, $zero, 6
-
-    	beq $t9, $s2, diagoI3
-		lw $ra, 4($sp)
-    	jr $ra
-    	dD1:
-    		sw $ra, 8($sp)
-			lw $ra, 8($sp)
-    		jr $ra
-    		
-    	diagoD2:
-    		addi $s3, $s2, 4
-    		lb $t8, tabla_numeros($s2)
-    	    lb $t7, tabla_numeros($s3)
-    	    sw $ra, 8($sp)
-    		beq $t8, $t7,diagoD21
-    		lw $ra, 8($sp)
-    		jr $ra
-    		diagoD21:
-    			subi $s3, $s3, 8
-    	        lb $t7, tabla_numeros($s3)
-    	        sw $ra, 12($sp)
-    			beq $t7, $t8,ganador
-    			lw $ra, 12($sp)
-    			jr $ra
-    	diagoD3:
-    		subi $s3, $s2, 4
-    		lb $t8, tabla_numeros($s2)
-    	        lb $t7, tabla_numeros($s3)
-    	        sw $ra, 8($sp)
-    		beq $t7, $t8,diagoD31
-    		lw $ra, 8($sp)
-    		jr $ra
-    		diagoD31:
-    			subi $s3, $s3, 4
-    	        	lb $t7, tabla_numeros($s3)
-    	        	sw $ra, 12($sp)
-    			beq $t7, $t8,ganador
-    			lw $ra, 12($sp)
-    			jr $ra
-    	diagoI1:
-    		addi $s3, $s2, 2
-    		lb $t8, tabla_numeros($s2)
-    	        lb $t7, tabla_numeros($s3)
-    	        sw $ra, 8($sp)
-    		beq $t7, $t8,diagoI11
-    		lw $ra, 8($sp)
-    		jr $ra
-    		diagoI11:
-    			addi $s3, $s3, 2
-    	       	    lb $t7, tabla_numeros($s3)
-    	        	sw $ra, 12($sp)
-    			beq $t7, $t8,ganador
-    			lw $ra, 12($sp)
-    			jr $ra
-    	diagoI2:
-    		addi $s3, $s2, 2
-    		lb $t8, tabla_numeros($s2)
-    	        lb $t7, tabla_numeros($s3)
-    	        sw $ra, 8($sp)
-    		beq $t7, $t8,diagoI21
-    		lw $ra, 8($sp)
-    		jr $ra
-    		diagoI21:
-    			subi $s3, $s3, 4
-    	        lb $t7, tabla_numeros($s3)
-    	        sw $ra, 12($sp)
-    			beq $t7, $t8,ganador
-    			lw $ra, 12($sp)
-    			jr $ra
-    	diagoI3:
-    		subi $s3, $s2, 2
-    		lb $t8, tabla_numeros($s2)
-    	    lb $t7, tabla_numeros($s3)
-    	    sw $ra, 8($sp)
-    		beq $t7, $t8,diagoI31
-    		lw $ra, 8($sp)
-    		jr $ra
-    		diagoI31:
-    			subi $s3, $s3, 2
-    	        lb $t7, tabla_numeros($s3)
-    	        sw $ra, 12($sp)
-    			beq $t7, $t8,ganador
-    			lw $ra, 12($sp)
-    			jr $ra
-
 JugadaMaquina:
+la $a0, maquina
+li $v0, 4
+syscall
 addi $t9, $zero, 0
 addi $s3, $zero, 3
+addi $sp, $sp, -20
+sw $ra, 0($sp)
 whilefila:
+	beq $t9, 9, columnas
 	lb $t7, tabla_numeros($t9)
 	lb $t8, tabla_aux($t9)
-	addi $sp, $sp, -20
-	sw $ra, 0($sp)
 	beq $t7, $t8, salidaF	
+	move $a0, $t9
 	addi $t9, $t9, 1
-	beq $t9, 9, columnas
+	li $v0, 1
+	syscall
 	j whilefila
 	salidaF: 
-   	    div  $t9, $s3
-   	    mflo $s2
-   	    mul $s2, $s2, $s3
-   	    sub $s4, $t9, $s2
+   	    	div  $t9, $s3
+   	    	mflo $s2
+   	    	mul $s2, $s2, $s3
+   	    	sub $s4, $t9, $s2
     		addi $s5,$s4,1
     		addi $s6,$s4,2
     		div $s5, $s3
@@ -253,29 +108,31 @@ whilefila:
     		add $s6,$s6,$s2
     		lb $t7, tabla_numeros($s5)
     		lb $t8, tabla_aux($s5)
-    		sw $ra, 4($sp)
+			sw $ra, 4($sp)
     		bne $t7, $t8, filaMaquina
-    		lw $ra, 4($sp)
-    		jr $ra
+			lw $ra, 4($sp)
     		filaMaquina:
     			lb $t8, tabla_numeros($s6)
-    			sw $ra, 8($sp)
+				sw $ra, 8($sp)
     			beq $t7, $t8, filaMaquina1
-    			lw $ra, 8($sp)
-    			jr $ra
+				lw $ra, 8($sp)
     			filaMaquina1:
     				sb $s1, tabla_numeros($t9)
-    				jr $ra
-    columnas:				
+    				jal final
+columnas:				
         addi $t9, $zero, 0
-whilecolumnas:
-	lb $t7, tabla_numeros($t9)
-	lb $t8, tabla_aux($t9)
-	beq $t7, $t8, salidaC
-	addi $t9, $t9, 1
-	beq $t9, 9, diagonales
-	j whilecolumnas
-	salidaC:
+        la $a0, empa
+        li $v0,4
+        syscall
+    whilecolumnas:
+		beq $t9, 9, diagonales
+		lb $t7, tabla_numeros($t9)
+		lb $t8, tabla_aux($t9)
+		beq $t7, $t8, salidaC
+		puntoc:
+		addi $t9, $t9, 1
+		j whilecolumnas
+		salidaC:
     		div $t9, $s3
     		mflo $s2
     		addi $s5, $s2,1
@@ -288,34 +145,31 @@ whilecolumnas:
     		mul $s6, $s6, $s3
     		add $s5, $s5, $s4
     		add $s6, $s6, $s4
-		lb $t7, tabla_numeros($s5)
+			lb $t7, tabla_numeros($s5)
     		lb $t8, tabla_aux($s5)
-    		sw $ra, 4($sp)
     		bne $t7, $t8, colMaquina
-    		lw $ra, 4($sp)
-    		jr $ra
+    		j puntoc
     		colMaquina:
     			lb $t8, tabla_numeros($s6)
-    			sw $ra,8($sp)
     			beq $t7, $t8, colMaquina1
-    			lw $ra, 8($sp)
-    			jr $ra
+    			j puntoc
     			colMaquina1:
     				sb $s1, tabla_numeros($t9)
-    				jr $ra
+    				j final
     diagonales:
-		lw $s2, 0
+		addi $s2, $zero,0
     	beq $t9, $s2, DiagoD1
-    	lw $s2, 4
+    	addi $s2, $zero, 4
     	beq $t9, $s2, DiagoD2
-    	lw $s2, 8
+    	addi $s2, $zero, 8
     	beq $t9, $s2, DiagoD3
-    	lw $s2, 2
+    	addi $s2, $zero,  2
     	beq $t9, $s2, DiagoI1
-    	lw $s2, 4
+    	addi $s2, $zero,  4
     	beq $t9, $s2, DiagoI2
-    	lw $s2, 6
+    	addi $s2, $zero,  6
     	beq $t9, $s2, DiagoI3
+		sali:
     	jal especiales
     	DiagoD1:
     		lb $t7, tabla_numeros($t9)
@@ -323,7 +177,7 @@ whilecolumnas:
     		sw $ra, 4($sp)
     		beq $t7, $t8, DiagoD11
     		lw $ra, 4($sp)
-    		jr $ra
+    		j sali
     		DiagoD11:
     			addi $s3, $t9, 4
     	    	lb $t8, tabla_aux($s3)
@@ -331,24 +185,24 @@ whilecolumnas:
     	        sw $ra,8($sp)
     			bne $t8, $t7,diagoD111
     			lw $ra, 8($sp)
-    			jr $ra
+    			j sali
     			diagoD111:
     				addi $s3, $s3, 4
     	        	lb $t8, tabla_numeros($s3)
     	        	sw $ra, 12($sp)
     				beq $t7, $t8,diagod1fin
     				lw $ra, 12($sp)
-    				jr $ra
+    				j sali
     				diagod1fin:
     					sb $s1, tabla_numeros($t9)
-    					jr $ra
+    					jal final
     	DiagoD2:
     		lb $t7, tabla_numeros($t9)
     		lb $t8, tabla_aux($t9)
     		sw $ra, 4($sp)
     		beq $t7, $t8, DiagoD21
     		lw $ra, 4($sp)
-    		jr $ra
+    		j sali
     		DiagoD21:
     			addi $s3, $t9, 4
     	    	lb $t8, tabla_aux($s3)
@@ -356,24 +210,24 @@ whilecolumnas:
     	        sw $ra, 8($sp)
     			bne $t8, $t7,diagoD211
     			lw $ra, 8($sp)
-    			jr $ra
+    			j sali
     			diagoD211:
     				subi $s3, $s3, 8
     	        	lb $t8, tabla_numeros($s3)
     	        	sw $ra, 12($sp)
     				beq $t7, $t8,diagod2fin
     				lw $ra, 12($sp)
-    				jr $ra
+    				j sali
     				diagod2fin:
     					sb $s1, tabla_numeros($t9)
-    					jr $ra
+    					jal final
     	DiagoD3:
     		lb $t7, tabla_numeros($t9)
     		lb $t8, tabla_aux($t9)
     		sw $ra, 4($sp)
     		beq $t7, $t8, DiagoD31
     		lw $ra, 4($sp)
-    		jr $ra
+    		j sali
     		DiagoD31:
     			subi $s3, $t9, 4
     	    		lb $t8, tabla_aux($s3)
@@ -381,24 +235,24 @@ whilecolumnas:
     	        	sw $ra, 8($sp)
     			bne $t8, $t7,diagoD311
     			lw $ra, 8($sp)
-    			jr $ra
+    			j sali
     			diagoD311:
     				subi $s3, $s3, 4
     	        		lb $t8, tabla_numeros($s3)
     	        		sw $ra, 12($sp)
     				beq $t7, $t8,diagod3fin
     				lw $ra, 12($sp)
-    				jr $ra
+    				j sali
     				diagod3fin:
     					sb $s1, tabla_numeros($t9)
-    					jr $ra
+    					j final
     	DiagoI1:
     		lb $t7, tabla_numeros($t9)
     		lb $t8, tabla_aux($t9)
     		sw $ra, 4($sp)
     		beq $t7, $t8, DiagoI11
     		lw $ra, 4($sp)
-    		jr $ra
+    		j sali
     		DiagoI11:
     			addi $s3, $t9, 2
     	    		lb $t8, tabla_aux($s3)
@@ -406,24 +260,24 @@ whilecolumnas:
     	        	sw $ra, 8($sp)
     			bne $t8, $t7,diagoI111
     			lw $ra, 8($sp)
-    			jr $ra
+    			j sali
     			diagoI111:
     				addi $s3, $s3, 2
     	        		lb $t8, tabla_numeros($s3)
     	        		sw $ra, 12($sp)
     				beq $t7, $t8,diagoI1fin
     				lw $ra, 12($sp)
-    				jr $ra
+    				j sali
     				diagoI1fin:
     					sb $s1, tabla_numeros($t9)
-    					jr $ra
+    					j final
     	DiagoI2:
     		lb $t7, tabla_numeros($t9)
     		lb $t8, tabla_aux($t9)
     		sw $ra, 4($sp)
     		beq $t7, $t8, DiagoI21
     		lw $ra, 4($sp)
-    		jr $ra
+    		j sali
     		DiagoI21:
     			addi $s3, $t9, 2
     	    		lb $t8, tabla_aux($s3)
@@ -431,24 +285,24 @@ whilecolumnas:
     	        	sw $ra, 8($sp)
     			bne $t8, $t7,diagoI211
     			lw $ra, 8($sp)
-    			jr $ra
+    			j sali
     			diagoI211:
     				subi $s3, $s3, 4
     	        		lb $t8, tabla_numeros($s3)
     	        		sw $ra, 12($sp)
     				beq $t7, $t8,diagoI2fin
     				lw $ra, 12($sp)
-    				jr $ra
+    				j sali
     				diagoI2fin:
     					sb $s1, tabla_numeros($t9)
-    					jr $ra
+    					j final
     	DiagoI3:
     		lb $t7, tabla_numeros($t9)
     		lb $t8, tabla_aux($t9)
     		sw $ra, 4($sp)
     		beq $t7, $t8, DiagoI21
     		lw $ra, 4($sp)
-    		jr $ra
+    		j sali
     		DiagoI31:
     			subi $s3, $t9, 2
     	    		lb $t8, tabla_aux($s3)
@@ -456,19 +310,20 @@ whilecolumnas:
     	        	sw $ra, 8($sp)
     			bne $t8, $t7,diagoI311
     			lw $ra, 8($sp)
-    			jr $ra
+    			j sali
     			diagoI311:
     				subi $s3, $s3, 4
     	        		lb $t8, tabla_numeros($s3)
     	        		sw $ra, 12($sp)
     				beq $t7, $t8,diagoI3fin
     				lw $ra, 12($sp)
-    				jr $ra
+    				j sali
     				diagoI3fin:
     					sb $s1, tabla_numeros($t9)
-    					jr $ra
+    					jal final
     especiales:
     addi $t6, $zero, 4 
+	
 	lb $t7, tabla_numeros($t6)
 	lb $t8, tabla_aux($t6)
 	beq $t7, $t8, centro
@@ -490,19 +345,19 @@ whilecolumnas:
 	beq $t7, $t8, einferiord
 	jal final
 	centro:
-		sw $s1, tabla_numeros($t6)
+		sb $s1, tabla_numeros($t6)
 		jal final
 	einferiord:
-		sw $s1, tabla_numeros($t6)
+		sb $s1, tabla_numeros($t6)
 		jal final
 	einferiori:
-		sw $s1, tabla_numeros($t6)
+		sb $s1, tabla_numeros($t6)
 		jal final
 	esuperiord:
-		sw $s1, tabla_numeros($t6)
+		sb $s1, tabla_numeros($t6)
 		jal final
 	esuperiori:
-		sw $s1, tabla_numeros($t6)
+		sb $s1, tabla_numeros($t6)
 		jal final
     final:
         jal Comprobacion
@@ -530,20 +385,25 @@ Gana2:
     syscall
 
 EmpateySeguirjuego:    
-        beq $t0, '1', empate2
-        beq $t1, '2', empate2
-        beq $t2, '3', empate2
-        beq $t3, '4', empate2
-        beq $t4, '5', empate2
-        beq $t5, '6', empate2
-        beq $t6, '7', empate2
-        beq $t7, '8', empate2
-        beq $t8, '9', empate2
-        addi $v0, $zero, 0
-        jr $ra
-empate2:
-        addi $v0, $zero, -1
-        jr $ra
+        addi $t9, $zero, 0
+        
+		addi $v1, $zero, 0
+		addi $sp,$sp,-4
+		sw $ra, 0($sp)
+        while10:
+			lb $t7, tabla_numeros ($t9)
+        	lb $t8, tabla_aux ($t9)
+            beq $t7, '9', exit10
+            bne $t7, $t8, siguiente
+			lw $ra, 0($sp)
+            jr $ra
+        siguiente:
+            addi $t9, $t9, 1
+            j while10
+        exit10:
+            addi $v0, $zero, -1
+			lw $ra, 0($sp)
+            jr $ra
 linea:
 	addi $t9, $zero,0
 	while11:
@@ -684,3 +544,143 @@ AbajoFinal:
 
      jr $ra
 
+Comprobacion:
+    	addi $s3, $zero, 3
+    	div $t9, $s3
+    	mflo $s2
+    	mul $s2, $s2, $s3
+    	sub $s4, $t9, $s2
+    	addi $s5,$s4,1
+    	addi $s6,$s4,2
+    	div $s5, $s3
+    	mfhi $s5
+    	div $s6, $s3
+    	mfhi $s6
+    	add $s5,$s5,$s2
+    	add $s6,$s6,$s2
+    	lb $t7, tabla_numeros($t9)
+    	lb $t8, tabla_numeros($s5)
+    	sw $ra, 4($sp)
+    	beq $t7,$t8,primeroHBien
+    	jal vertical
+    	primeroHBien:
+	    	lb $t8, tabla_numeros($s6)
+	    	sw $ra, 8($sp)
+    		beq  $t8,$t7,ganador
+    		lw $ra, 8($sp)
+    		jr $ra
+		vertical:
+    	div $t9, $s3
+    	mflo $s2
+    	addi $s5, $s2,1
+    	addi $s6, $s2,2
+    	div $s5, $s3
+    	mfhi $s5
+    	div $s6, $s3
+    	mfhi $s6
+    	mul $s5, $s5, $s3
+    	mul $s6, $s6, $s3
+    	add $s5, $s5, $s4
+    	add $s6, $s6, $s4
+    	lb $t8, tabla_numeros($s5)
+    	beq $t7,$t8,primeroVBien
+    	jal diago
+    	primeroVBien:
+    		lb $t8, tabla_numeros($s6)
+    		sw $ra, 8($sp)
+    		beq  $t7,$t8,ganador
+    		lw $ra, 8($sp)
+    		jr $ra
+	diago: 
+
+    	beq $t9, 0, diagoD1 	
+    	addi $s2, $zero, 4
+    	beq $t9, $s2, diagoD2
+    	addi $s2, $zero, 8
+    	beq $t9, $s2, diagoD3
+    	addi $s2, $zero, 2
+    	beq $t9, $s2, diagoI1
+    	addi $s2, $zero, 4
+    	beq $t9, $s2, diagoI2  
+    	addi $s2, $zero, 6
+    	beq $t9, $s2, diagoI3
+    	sal:
+	lw $ra, 4($sp)
+    	jr $ra
+    	diagoD1:
+    		addi $s3, $s2, 4
+    		lb $t8, tabla_numeros($s2)
+    	    	lb $t7, tabla_numeros($s3)
+    		beq $t8, $t7,diagoD11
+    		j sal
+    		diagoD11:
+    			addi $s3, $s2, 4
+    	        	lb $t7, tabla_numeros($s3)
+    	        	
+    			beq $t7, $t8,ganador
+    			
+    			j sal
+    	diagoD2:
+    		addi $s3, $s2, 4
+    		lb $t8, tabla_numeros($s2)
+    	    	lb $t7, tabla_numeros($s3)
+    	   	
+    		beq $t8, $t7,diagoD21
+    		j sal
+    		diagoD21:
+    			subi $s3, $s3, 8
+    	        	lb $t7, tabla_numeros($s3)
+    	        	
+    			beq $t7, $t8,ganador
+    			
+    			j sal
+    	diagoD3:
+    		subi $s3, $s2, 4
+    		lb $t8, tabla_numeros($s2)
+    	        lb $t7, tabla_numeros($s3)
+    	        
+    		beq $t7, $t8,diagoD31
+    		
+    		j sal
+    		diagoD31:
+    			subi $s3, $s3, 4
+    	        	lb $t7, tabla_numeros($s3)
+    	        	
+    			beq $t7, $t8,ganador
+    			
+    			j sal
+    	diagoI1:
+    		addi $s3, $s2, 2
+    		lb $t8, tabla_numeros($s2)
+    	    lb $t7, tabla_numeros($s3)
+    		beq $t7, $t8,diagoI11
+    		j sal
+    		diagoI11:
+    			addi $s3, $s3, 2
+    	       	lb $t7, tabla_numeros($s3)
+    			beq $t7, $t8,ganador
+    			j sal
+    	diagoI2:
+    		addi $s3, $s2, 2
+    		lb $t8, tabla_numeros($s2)
+    	    lb $t7, tabla_numeros($s3)
+    		beq $t7, $t8,diagoI21
+
+    		j sal
+    		diagoI21:
+    			subi $s3, $s3, 4
+    	        lb $t7, tabla_numeros($s3)
+    			beq $t7, $t8,ganador
+    			j sal
+    	diagoI3:
+    		subi $s3, $s2, 2
+    		lb $t8, tabla_numeros($s2)
+    	    lb $t7, tabla_numeros($s3)
+    		beq $t7, $t8,diagoI31
+    		j sal
+    		diagoI31:
+    			subi $s3, $s3, 2
+    	        lb $t7, tabla_numeros($s3)
+    			beq $t7, $t8,ganador
+
+    			j sal
