@@ -1,4 +1,4 @@
-#____________________ DATOS DEL PROGRAMA ____________________________________________
+#_____________________________ DATOS DEL PROGRAMA ___________________________________
 .data
     #----------------------Reservas y arreglos de juego------------------------------
 	tablero: .space 36
@@ -99,34 +99,30 @@
 		lb $t7, tabla_numeros($t9)
 		lb $t8, tabla_aux($t9)
 		beq $t7, $t8, salidaF	
-		move $a0, $t9
+		puntof:
 		addi $t9, $t9, 1
-		li $v0, 1
-		syscall
 		j whilefila
 		salidaF: 
 				div  $t9, $s3
-				mflo $s2
+				mflo $s2 #Registro para obtener el cociente
 				mul $s2, $s2, $s3
 				sub $s4, $t9, $s2
 				addi $s5,$s4,1
 				addi $s6,$s4,2
 				div $s5, $s3
-				mfhi $s5
+				mfhi $s5 #Registro para obtener el residuo
 				div $s6, $s3
-				mfhi $s6
+				mfhi $s6 #Registro para obtener el residuo
 				add $s5,$s5,$s2
 				add $s6,$s6,$s2
 				lb $t7, tabla_numeros($s5)
 				lb $t8, tabla_aux($s5)
-				sw $ra, 4($sp)
 				bne $t7, $t8, filaMaquina
-				lw $ra, 4($sp)
+				j puntof
 				filaMaquina:
 					lb $t8, tabla_numeros($s6)
-					sw $ra, 8($sp)
 					beq $t7, $t8, filaMaquina1
-					lw $ra, 8($sp)
+					j puntof
 					filaMaquina1:
 						sb $s1, tabla_numeros($t9)
 						jal final
@@ -166,7 +162,7 @@
 					j puntoc
 					colMaquina1:
 						sb $s1, tabla_numeros($t9)
-						j final
+						jal final
 		diagonales:
 			addi $s2, $zero,0
 			beq $t9, $s2, DiagoD1
@@ -226,7 +222,7 @@
 						subi $s3, $s3, 8
 						lb $t8, tabla_numeros($s3)
 						sw $ra, 12($sp)
-						beq $t7, $t8,diagod2fin
+						beq $t7, $t8, diagod2fin
 						lw $ra, 12($sp)
 						j sali
 						diagod2fin:
@@ -399,7 +395,6 @@
 	#----Función que verifica existencia de movimeintos libres------
 	EmpateySeguirjuego:    
         addi $t9, $zero, 0
-        
 		addi $v1, $zero, 0
 		addi $sp,$sp,-4
 		sw $ra, 0($sp)
@@ -588,47 +583,40 @@
     	addi $s2, $zero, 6
     	beq $t9, $s2, diagoI3
     	sal:
-	lw $ra, 4($sp)
+	    lw $ra, 4($sp)
     	jr $ra
     	diagoD1:
     		addi $s3, $s2, 4
     		lb $t8, tabla_numeros($s2)
-    	    	lb $t7, tabla_numeros($s3)
+    	    lb $t7, tabla_numeros($s3)
     		beq $t8, $t7,diagoD11
     		j sal
     		diagoD11:
     			addi $s3, $s2, 4
-    	        	lb $t7, tabla_numeros($s3)
-    	        	
+    	       	lb $t7, tabla_numeros($s3)
     			beq $t7, $t8,ganador
-    			
     			j sal
     	diagoD2:
     		addi $s3, $s2, 4
     		lb $t8, tabla_numeros($s2)
-    	    	lb $t7, tabla_numeros($s3)
+    	    lb $t7, tabla_numeros($s3)
     		beq $t8, $t7,diagoD21
     		j sal
     		diagoD21:
     			subi $s3, $s3, 8
-    	        	lb $t7, tabla_numeros($s3)
-    	        	
+    	       	lb $t7, tabla_numeros($s3)
     			beq $t7, $t8,ganador
-    			
     			j sal
     	diagoD3:
     		subi $s3, $s2, 4
     		lb $t8, tabla_numeros($s2)
-    	        lb $t7, tabla_numeros($s3)
-    	        
+    	    lb $t7, tabla_numeros($s3)
     		beq $t7, $t8,diagoD31
     		j sal
     		diagoD31:
     			subi $s3, $s3, 4
-    	        	lb $t7, tabla_numeros($s3)
-    	        	
+    	       	lb $t7, tabla_numeros($s3)
     			beq $t7, $t8,ganador
-    			
     			j sal
     	diagoI1:
     		addi $s3, $s2, 2
