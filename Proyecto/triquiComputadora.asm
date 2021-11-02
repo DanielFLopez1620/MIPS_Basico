@@ -22,6 +22,8 @@
 	gana2: .asciiz "Gana el jugador 2"
 	maquina: .asciiz "\nJuega la maquina...\n"
 	titulo: .asciiz "Bienvenidos al triqui máquina vs jugador: "
+	noDisponible: .asciiz "El lugar digitado esta ocupado\n"
+	rango: .asciiz "El movimiento debe estar entre 0-9\n"
 #_________________________ DESARROLLO DEL PROGRAMA _____________________________________
 .text
     #_______________________________DESARROLLO DEL MAIN_________________________________
@@ -77,6 +79,14 @@
     	syscall
     	li $v0, 5 #Lectura de entero por teclado
     	syscall 
+		# Condiciones de movimiento en rango:
+    	bgt $v0, 9, FueraRango
+    	blt $v0, 0, FueraRango
+    	# Condiciones de movimiento ocupado:
+    	lb $t9,tabla_numeros($t9)
+    	beq $t9, 'X', Ocupado
+    	beq $t9, 'O', Ocupado
+    	# Asignaciones y comprobaciones:
     	addi $t9,$v0,-1
     	sb $s1, tabla_numeros($t9)
     	addi $sp, $sp, -16
@@ -84,6 +94,16 @@
     	jal Comprobacion
     	lw $ra, 0($sp)
     	jr $ra
+		Ocupado:
+    		li $v0, 4
+    		la $a0, noDisponible
+    		syscall
+    		j Jugada
+    	FueraRango:
+    		li $v0, 4
+    		la $a0, rango
+    		syscall
+    		j Jugada
 	#------------------Función para el movimiento de máquina---------------------
 	# Busca analizar bloquear tres en línea del oponente y completar un movimiento
 	JugadaMaquina:

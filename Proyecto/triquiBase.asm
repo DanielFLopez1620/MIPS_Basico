@@ -21,6 +21,8 @@
 	gana1: .asciiz "Gana el jugador 1"
 	gana2: .asciiz "Gana el jugador 2"
 	titulo: .asciiz "Bienvenidos al triqui de 2 jugadores: "
+	noDisponible: .asciiz "El lugar digitado esta ocupado\n"
+	rango: .asciiz "El movimiento debe estar entre 0-9\n"
 #_________________________ DESARROLLO DEL PROGRAMA _____________________________________
 .text
     #_______________________________DESARROLLO DEL MAIN_________________________________
@@ -65,13 +67,22 @@
         lb $t7, 7($k0)
         lb $t8, 8($k0)
         jr $ra
-	#------Función que lee una posición y efectua el movimiento----------
+	#------Función que lee una posición, verifica y efectua el movimiento----------
     Jugada:
    	la $a0, MensajeJuga
     	li $v0,4
     	syscall
     	li $v0,5
-    	syscall 
+    	syscall
+		addi $t9,$v0,-1
+		# Condiciones de movimiento en rango:
+    	bgt $v0, 9, FueraRango
+    	blt $v0, 0, FueraRango
+    	# Condiciones de movimiento ocupado:
+    	lb $t9,tabla_numeros($t9)
+    	beq $t9, 'X', Ocupado
+    	beq $t9, 'O', Ocupado
+    	# Asignaciones y comprobaciones:
     	addi $t9,$v0,-1
     	sb $s1, tabla_numeros($t9)
     	addi $sp, $sp, -16 # Reserva de memoria dinámica de 4 bits
@@ -79,6 +90,16 @@
     	jal Comprobacion
     	lw $ra, 0($sp) # Lectura de dirección de salto
     	jr $ra
+		Ocupado:
+    		li $v0, 4
+    		la $a0, noDisponible
+    		syscall
+    		j Jugada
+    	FueraRango:
+    		li $v0, 4
+    		la $a0, rango
+    		syscall
+    		j Jugada
 	#----Función que manda al mensaje correspondiente de ganador----
 	ganador:
 		jal MostrarTablero
