@@ -15,11 +15,13 @@
     parte3:       .asciiz   "  |  "
     parte4:       .asciiz   "_____|_____|_____\n"
     parte5:       .asciiz   "  \n"
+	mensa1: .asciiz "entraaaaa---"
+	mensa: .asciiz "completaaaaa---"
 	#----------------------Mensaje para usuarios de juego-------------------------------
     MensajeJuga:   .asciiz   "Ingrese su movimiento (1-9) : "
 	empa: .asciiz "Los jugadores empataron el juego"
 	gana1: .asciiz "Gana el jugador 1"
-	gana2: .asciiz "Gana el jugador 2"
+	gana2: .asciiz "Gana la maquina"
 	maquina: .asciiz "\nJuega la maquina...\n"
 	titulo: .asciiz "Bienvenidos al triqui máquina vs jugador: "
 	noDisponible: .asciiz "El lugar digitado esta ocupado\n"
@@ -54,7 +56,6 @@
     	#Preparación para finalizar ejecución:
         li $v0, 10  
         syscall
-	
     #________________DEFINICION DE FUNCIONES______________________________
     #------Función que carga el vector a temporales----------------------
 	MostrarTablero:
@@ -62,6 +63,7 @@
         sw $ra, 0($sp)
         jal Tabla
         lw $ra, 0($sp)
+		addi $sp, $sp, 4
         lb $t0, 0($k0)
         lb $t1, 1($k0)
         lb $t2, 2($k0)
@@ -83,7 +85,7 @@
     	bgt $v0, 9, FueraRango
     	blt $v0, 0, FueraRango
     	# Condiciones de movimiento ocupado:
-    	lb $t9,tabla_numeros($t9)
+    	lb $t9, tabla_numeros($t9)
     	beq $t9, 'X', Ocupado
     	beq $t9, 'O', Ocupado
     	# Asignaciones y comprobaciones:
@@ -93,6 +95,7 @@
     	sw $ra, 0($sp)
     	jal Comprobacion
     	lw $ra, 0($sp)
+		addi $sp, $sp, 16
     	jr $ra
 		Ocupado:
     		li $v0, 4
@@ -148,9 +151,6 @@
 						jal final
 	columnas:				
 			addi $t9, $zero, 0
-			la $a0, empa
-			li $v0,4
-			syscall
 		whilecolumnas:
 			beq $t9, 9, diagonales
 			lb $t7, tabla_numeros($t9)
@@ -160,6 +160,10 @@
 			addi $t9, $t9, 1
 			j whilecolumnas
 			salidaC:
+			div  $t9, $s3
+				mflo $s2 #Registro para obtener el cociente
+				mul $s2, $s2, $s3
+				sub $s4, $t9, $s2
 				div $t9, $s3
 				mflo $s2
 				addi $s5, $s2,1
@@ -388,6 +392,7 @@
 		final:
 			jal Comprobacion
 			lw $ra, 0($sp)
+			addi $sp, $sp, 20
 			jr $ra
 	#----Función que manda al mensaje correspondiente de ganador----
 	ganador:
@@ -583,11 +588,13 @@
     	add $s6, $s6, $s4
     	lb $t8, tabla_numeros($s5)
     	beq $t7,$t8,primeroVBien
+		salv:
     	jal diago
     	primeroVBien:
     		lb $t8, tabla_numeros($s6)
     		sw $ra, 8($sp)
-    		beq  $t7,$t8,ganador
+    		beq $t7,$t8, ganador
+			j salv
     		lw $ra, 8($sp)
     		jr $ra
 	diago: 

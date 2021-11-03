@@ -15,6 +15,8 @@
     parte3:       .asciiz   "  |  "
     parte4:       .asciiz   "_____|_____|_____\n"
     parte5:       .asciiz   "  \n"
+	parte6:       .asciiz   "6----\n"
+	parte7:       .asciiz   "7----\n"
 	#----------------------Mensaje para usuarios de juego-------------------------------
     MensajeJuga:   .asciiz   "Ingrese su movimiento (1-9) : "
 	empa: .asciiz "Los jugadores empataron el juego"
@@ -89,6 +91,7 @@
     	sw $ra, 0($sp) # Guardado de dirección de salto
     	jal Comprobacion
     	lw $ra, 0($sp) # Lectura de dirección de salto
+		addi $sp, $sp, 16
     	jr $ra
 		Ocupado:
     		li $v0, 4
@@ -127,7 +130,7 @@
 	EmpateySeguirjuego:    
         addi $t9, $zero, 0
 		addi $v1, $zero, 0
-		addi $sp,$sp,-4 
+		addi $sp, $sp, -4 
 		sw $ra, 0($sp) #Guardado de dirección de salto 
         while10: # Bucle while realizado con saltos y etiquetas
 			lb $t7, tabla_numeros ($t9)
@@ -142,6 +145,7 @@
         exit10: # Salida del bucle
             addi $v0, $zero, -1
 			lw $ra, 0($sp) #Cargar dirección de salto previo
+			addi $sp, $sp, 4
             jr $ra
 	#---------Función auxiliar para mostrar datos del arreglo-----------
 	linea:
@@ -274,6 +278,9 @@
     	lb $t8, tabla_numeros($s5)
     	sw $ra, 4($sp) 
     	beq $t7,$t8,primeroHBien
+		li $v0, 4
+		la $a0, parte6
+		syscall
     	jal vertical
     	primeroHBien:
 	    	lb $t8, tabla_numeros($s6)
@@ -296,11 +303,16 @@
     	add $s6, $s6, $s4
     	lb $t8, tabla_numeros($s5)
     	beq $t7,$t8,primeroVBien
+		salv:
+		li $v0, 4
+		la $a0, parte7
+		syscall
     	jal diago
     	primeroVBien:
     		lb $t8, tabla_numeros($s6)
     		sw $ra, 8($sp)
     		beq  $t7,$t8,ganador
+			j salv
     		lw $ra, 8($sp)
     		jr $ra
 	diago: #Revision de diagonales:
